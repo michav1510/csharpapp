@@ -1,27 +1,25 @@
+using CSharpApp.Application.Implementations;
+using CSharpApp.Core.Dtos.Contracts;
+
 namespace CSharpApp.Application.Products;
 
 public class ProductsService : IProductsService
 {
-    private readonly HttpClient _httpClient;
+    private readonly IMyClient _myClient;
     private readonly RestApiSettings _restApiSettings;
     private readonly ILogger<ProductsService> _logger;
 
     public ProductsService(IOptions<RestApiSettings> restApiSettings, 
         ILogger<ProductsService> logger)
-    {
-        _httpClient = new HttpClient();
+    {         
+        _myClient = new MyClient<ProductsService>(new HttpClient(), logger);
         _restApiSettings = restApiSettings.Value;
         _logger = logger;
     }
 
     public async Task<IReadOnlyCollection<Product>> GetProducts()
     {
-        _httpClient.BaseAddress = new Uri(_restApiSettings.BaseUrl!);
-        var response = await _httpClient.GetAsync(_restApiSettings.Products);
-        response.EnsureSuccessStatusCode();
-        var content = await response.Content.ReadAsStringAsync();
-        var res = JsonSerializer.Deserialize<List<Product>>(content);
-        
-        return res.AsReadOnly();
+        List<Product> res = await _myClient.Request<GetAllProductsRequest, List<Product>>(new GetAllProductsRequest());        
+        return res.AsReadOnly();      
     }
 }
