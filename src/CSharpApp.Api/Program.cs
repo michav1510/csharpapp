@@ -1,3 +1,8 @@
+using CSharpApp.Application.Products;
+using CSharpApp.Core.Dtos;
+using CSharpApp.Core.Dtos.Commands;
+using MediatR;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
@@ -21,6 +26,8 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 
+var mediator = app.Services.GetRequiredService<IMediator>();
+
 var versionedEndpointRouteBuilder = app.NewVersionedApi();
 
 versionedEndpointRouteBuilder.MapGet("api/v{version:apiVersion}/getproducts", async (IProductsService productsService) =>
@@ -29,6 +36,14 @@ versionedEndpointRouteBuilder.MapGet("api/v{version:apiVersion}/getproducts", as
         return products;
     })
     .WithName("GetProducts")
+.HasApiVersion(1.0);
+
+versionedEndpointRouteBuilder.MapPost("api/v{version:apiVersion}/createproduct", async (IMediator mediator, CreateProductCommand command) =>
+{
+    var result = await mediator.Send(command);  
+    return result;
+})
+    .WithName("CreateProduct")
     .HasApiVersion(1.0);
 
 app.Run();
