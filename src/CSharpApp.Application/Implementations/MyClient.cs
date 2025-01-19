@@ -1,5 +1,6 @@
 ﻿using CSharpApp.Application.Products;
 using System.Net;
+using System.Text;
 
 namespace CSharpApp.Application.Implementations
 {
@@ -26,6 +27,11 @@ namespace CSharpApp.Application.Implementations
                 {                    
                     case "GET":
                         break;
+                    case "POST":
+                        string requestContent = JsonSerializer.Serialize(request, _serializerOptions);
+                        requestMessage.Content = new StringContent(JsonSerializer.Serialize(request, _serializerOptions), Encoding.UTF8, "application/json");
+                        requestMessage.Headers.TryAddWithoutValidation("content-type", "application/json");
+                        break;
                     default:
                         throw new InvalidOperationException($"Request method {request.Method} is not handled");
                 }
@@ -49,7 +55,8 @@ namespace CSharpApp.Application.Implementations
                     string r = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
                     return JsonSerializer.Deserialize<TResponse>(r, _serializerOptions);
                 case HttpStatusCode.Created:
-                    return JsonSerializer.Deserialize<TResponse>("{}");
+                    r = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return JsonSerializer.Deserialize<TResponse>(r, _serializerOptions);
                 default:
                     _logger.LogError($"{nameof(TRequest)} failed with HTTP {responseMessage.StatusCode}: " + await responseMessage.Content.ReadAsStringAsync());
                     return default;
