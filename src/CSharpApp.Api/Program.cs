@@ -1,6 +1,7 @@
-using CSharpApp.Application.Products;
+//using CSharpApp.Application.Products;
 using CSharpApp.Core.Dtos;
 using CSharpApp.Core.Dtos.Commands;
+using CSharpApp.Core.Dtos.Queries;
 using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,17 +27,18 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 
-var mediator = app.Services.GetRequiredService<IMediator>();
+//var mediator = app.Services.GetRequiredService<IMediator>();
 
 var versionedEndpointRouteBuilder = app.NewVersionedApi();
 
-versionedEndpointRouteBuilder.MapGet("api/v{version:apiVersion}/getproducts", async (IProductsService productsService) =>
-    {
-        var products = await productsService.GetProducts();
-        return products;
-    })
+versionedEndpointRouteBuilder.MapGet("api/v{version:apiVersion}/getproducts", async (IMediator mediator) =>
+{
+    var products = await mediator.Send(new GetAllProductsQuery());
+    return products;
+})
     .WithName("GetProducts")
 .HasApiVersion(1.0);
+
 
 versionedEndpointRouteBuilder.MapPost("api/v{version:apiVersion}/createproduct", async (IMediator mediator, CreateProductCommand command) =>
 {
