@@ -1,5 +1,4 @@
-﻿using CSharpApp.Application.Products;
-using System.Net;
+﻿using System.Net;
 using System.Text;
 
 namespace CSharpApp.Application.Implementations
