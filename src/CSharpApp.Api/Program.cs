@@ -1,5 +1,4 @@
 //using CSharpApp.Application.Products;
-using CSharpApp.Core.Dtos;
 using CSharpApp.Core.Dtos.Commands;
 using CSharpApp.Core.Dtos.Queries;
 using MediatR;
@@ -26,8 +25,6 @@ if (app.Environment.IsDevelopment())
 }
 
 //app.UseHttpsRedirection();
-
-//var mediator = app.Services.GetRequiredService<IMediator>();
 
 var versionedEndpointRouteBuilder = app.NewVersionedApi();
 

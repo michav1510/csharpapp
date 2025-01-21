@@ -1,7 +1,5 @@
 using CSharpApp.Application.Handlers;
 using CSharpApp.Application.Implementations;
-using CSharpApp.Core.Dtos.Commands;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace CSharpApp.Infrastructure.Configuration;
 
@@ -15,14 +13,17 @@ public static class DefaultConfiguration
         services.Configure<RestApiSettings>(configuration!.GetSection(nameof(RestApiSettings)));
         services.Configure<HttpClientSettings>(configuration.GetSection(nameof(HttpClientSettings)));
 
-        services.AddTransient<IMyClient, MyClient<IMyClient>>();
+        var credStorage = new CredsStorage(configuration);
+
+        services.AddSingleton<ICredsStorage>(credStorage);
+        services.AddSingleton<IMyClient, MyClient<IMyClient>>();
+        services.AddSingleton<ITokenStorage, TokenStorage>();
         services.AddHttpClient<IMyClient, MyClient<IMyClient>>();
         services.AddMediatR(opt =>
         {
             opt.RegisterServicesFromAssemblyContaining<CreateProductHandler>();
             opt.RegisterServicesFromAssemblyContaining<GetAllProductsHandler>();
         });
-
 
         return services;
     }
