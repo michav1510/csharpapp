@@ -1,4 +1,5 @@
 //using CSharpApp.Application.Products;
+using CSharpApp.Application.Implementations;
 using CSharpApp.Core.Dtos.Commands;
 using CSharpApp.Core.Dtos.Queries;
 using MediatR;
@@ -25,6 +26,9 @@ if (app.Environment.IsDevelopment())
 }
 
 //app.UseHttpsRedirection();
+
+app.UseMiddleware<LoggingMiddleware>();
+
 
 var versionedEndpointRouteBuilder = app.NewVersionedApi();
 
