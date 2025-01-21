@@ -4,7 +4,7 @@ An application for C# (.net) knowledge assessment
 
 ## Description
 
-This is a web application that interacts with a 3nd party service (<https://fakeapi.platzi.com>/<https://api.escuelajs.co>) and serves data
+This is a web application that interacts with a 3rd party service (<https://fakeapi.platzi.com>/<https://api.escuelajs.co>) and serves data
 
 We have to do some code refactoring and implement some new features
 
