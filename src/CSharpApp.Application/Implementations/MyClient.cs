@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using CSharpApp.Core.Dtos.Contracts;
+using System.Net;
 using System.Text;
 
 namespace CSharpApp.Application.Implementations
@@ -8,15 +9,26 @@ namespace CSharpApp.Application.Implementations
         private readonly JsonSerializerOptions _serializerOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
         private readonly HttpClient _httpClient;
         private readonly ILogger<T> _logger;
+        private ITokenStorage _tokenStorage;
+        private ICredsStorage _credsStorage;
 
-        public MyClient(HttpClient httpClient, ILogger<T> logger)
+        public MyClient(HttpClient httpClient, ILogger<T> logger, ITokenStorage tokenStorage, ICredsStorage credsStorage)
         {
             _httpClient = httpClient;
             _logger = logger;
+            _tokenStorage = tokenStorage;
+            _credsStorage = credsStorage;   
         }
 
         public async Task<TResponse> Request<TRequest, TResponse>(TRequest request) where TRequest : ClientRequest
         {
+            if (request.GetType() != typeof(AuthenticateRequest) && !_tokenStorage.IsTokenValid())
+            {
+                await Authenticate();
+            }
+            
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _tokenStorage.GetToken());
+           
             Uri uri = new($"https://api.escuelajs.co/{request.Path}");
 
             HttpResponseMessage? response;
@@ -36,7 +48,7 @@ namespace CSharpApp.Application.Implementations
                 }
 
                 try
-                {
+                {                    
                     response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
                 }
                 catch (Exception e)
@@ -62,5 +74,21 @@ namespace CSharpApp.Application.Implementations
 
             }
         }
+
+        private async Task Authenticate()
+        {
+            if (_httpClient != null)
+            {
+                var request = new AuthenticateRequest(_credsStorage.GetEmail(), _credsStorage.GetPassword());
+                var result = await Request<AuthenticateRequest, AuthenticateResponse>(request);
+                _tokenStorage.SaveToken(result.AccesToken);
+            }
+            else
+            {
+                throw new Exception("The client has not been initialized");
+            }
+
+        }
+
     }
 }
