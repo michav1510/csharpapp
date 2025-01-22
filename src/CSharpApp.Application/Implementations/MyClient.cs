@@ -26,8 +26,11 @@ namespace CSharpApp.Application.Implementations
             {
                 await Authenticate();
             }
-            
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _tokenStorage.GetToken());
+
+            if (request.GetType() != typeof(AuthenticateRequest))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _tokenStorage.GetToken());
+            }         
            
             Uri uri = new($"https://api.escuelajs.co/{request.Path}");
 
