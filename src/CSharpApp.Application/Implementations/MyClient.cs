@@ -11,6 +11,7 @@ namespace CSharpApp.Application.Implementations
         private readonly ILogger<T> _logger;
         private ITokenStorage _tokenStorage;
         private ICredsStorage _credsStorage;
+        private IDateTimeProvider _dateTimeProvider;
 
         public MyClient(HttpClient httpClient, ILogger<T> logger, ITokenStorage tokenStorage, ICredsStorage credsStorage)
         {
