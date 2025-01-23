@@ -16,6 +16,7 @@ public static class DefaultConfiguration
         var credStorage = new CredsStorage(configuration);
 
         services.AddSingleton<ICredsStorage>(credStorage);
+        services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         services.AddSingleton<IMyClient, MyClient<IMyClient>>();
         services.AddSingleton<ITokenStorage, TokenStorage>();
         services.AddHttpClient<IMyClient, MyClient<IMyClient>>();

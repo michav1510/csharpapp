@@ -4,7 +4,14 @@
     {
         private string? _token;
         private DateTime? _expires;
+        private IDateTimeProvider _dateTimeProvider;
         
+        public TokenStorage(IDateTimeProvider dateTimeProvider)
+        {
+            _dateTimeProvider = dateTimeProvider;
+        }
+
+
         public string GetToken()
         {
             return _token;
@@ -13,7 +20,7 @@
         public void SaveToken(string token)
         {
             _token = token;
-            _expires = DateTime.UtcNow.AddDays(20);
+            _expires = _dateTimeProvider.Now.AddDays(20);
         }
 
         public bool IsTokenValid()
@@ -22,7 +29,7 @@
             {
                 return false;
             }
-            DateTime now = DateTime.UtcNow;
+            DateTime now = _dateTimeProvider.Now;
             if (now < _expires)
             {
                 return true;
