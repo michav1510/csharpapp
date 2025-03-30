@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CSharpApp.Core.Dtos.Queries
+namespace CSharpApp.Application.Products.Queries.GetAllProducts
 {
-    public class GetAllProductsQuery : IRequest<GetAllProductsResponse>
+    public class GetAllProductsQuery : IRequest<IEnumerable<GetAllProductsResponse>>
     {
     }
 }

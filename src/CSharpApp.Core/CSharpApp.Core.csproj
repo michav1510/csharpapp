@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Queries\" />
+      <Folder Include="Dtos\Queries\" />
       <Folder Include="Settings\" />
     </ItemGroup>
 
