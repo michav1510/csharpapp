@@ -1,12 +1,8 @@
 ﻿using CSharpApp.Core.Dtos.Contracts;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CSharpApp.Core.Dtos.Commands
+
+namespace CSharpApp.Application.Products.Commands.CreateProduct
 {
     public class CreateProductCommand : IRequest<CreateProductResponse>
     {

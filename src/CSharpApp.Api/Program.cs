@@ -1,7 +1,7 @@
 //using CSharpApp.Application.Products;
 using CSharpApp.Application.Implementations;
-using CSharpApp.Core.Dtos.Commands;
-using CSharpApp.Core.Dtos.Queries;
+using CSharpApp.Application.Products.Commands.CreateProduct;
+using CSharpApp.Application.Products.Queries.GetAllProducts;
 using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +11,7 @@ builder.Logging.ClearProviders().AddSerilog(logger);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddMemoryCache();
 builder.Services.AddOpenApi();
 builder.Services.AddDefaultConfiguration();
 builder.Services.AddHttpConfiguration();
@@ -41,12 +42,12 @@ versionedEndpointRouteBuilder.MapGet("api/v{version:apiVersion}/getproducts", as
 .HasApiVersion(1.0);
 
 
-versionedEndpointRouteBuilder.MapPost("api/v{version:apiVersion}/createproduct", async (IMediator mediator, CreateProductCommand command) =>
-{
-    var result = await mediator.Send(command);  
-    return result;
-})
-    .WithName("CreateProduct")
-    .HasApiVersion(1.0);
+//versionedEndpointRouteBuilder.MapPost("api/v{version:apiVersion}/createproduct", async (IMediator mediator, CreateProductCommand command) =>
+//{
+//    var result = await mediator.Send(command);  
+//    return result;
+//})
+//    .WithName("CreateProduct")
+//    .HasApiVersion(1.0);
 
 app.Run();
